@@ -12,7 +12,7 @@ public class LocalPrincipal implements Serializable {
     /**
      * Class version, since this is a shared object.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     /**
      * User object contained in this principal.
      */
@@ -38,5 +38,12 @@ public class LocalPrincipal implements Serializable {
      */
     public final Set<String> getRoles() {
         return localRoles;
+    }
+    /**
+     * 
+     * @return User of this principal.
+     */
+    public User getUser() {
+        return this.localUser;
     }
 }
