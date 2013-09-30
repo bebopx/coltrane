@@ -7,6 +7,8 @@ package com.bebopx.coltrane.view.main;
 import com.bebopx.coltrane.bridge.Generator;
 import com.bebopx.coltrane.sys.LocalNavigator;
 import com.bebopx.coltrane.util.ComponentTool;
+import com.bebopx.common.security.LocalPrincipal;
+import com.bebopx.common.security.User;
 import com.google.common.base.Strings;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -19,6 +21,9 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 
 /**
  *
@@ -29,20 +34,8 @@ public final class MainComponentsBuilder {
     private MainComponentsBuilder() {
     }
 
-    public static Button buildViewAccess(final String view, final String icon,
-            final CssLayout menu, final LocalNavigator nav) {
-        
-        String localICon = icon;
-        
-        if (Strings.isNullOrEmpty(localICon)) {
-            localICon = new StringBuilder().append("icon-").append(view).toString();
-        }
-        
-        return buildViewAccessButton(view, localICon, menu, nav);
-    }
-
-    private static Button buildViewAccessButton(final String view, final String icon,
-            final CssLayout menu, final LocalNavigator nav) {
+    public static Button buildViewAccessButton(final String view, final String icon,
+                      final CssLayout menu, final LocalNavigator nav) {
 
         Button localButton = new NativeButton(view.substring(0, 1).toUpperCase()
                 + view.substring(1).replace('-', ' '));
@@ -109,7 +102,18 @@ public final class MainComponentsBuilder {
                 Image profilePic = new Image(null, new ThemeResource("img/profile-pic.png"));
                 profilePic.setWidth("34px");
                 addComponent(profilePic);
-                Label userName = new Label(new StringBuilder().append(Generator.randomFirstName()).append(" ").append(Generator.randomLastName()).toString());
+                
+                
+                PrincipalCollection currentCollection;
+                currentCollection = SecurityUtils.getSubject().getPrincipals();
+                
+                LocalPrincipal currentPrincipal;
+                currentPrincipal = (LocalPrincipal)currentCollection.getPrimaryPrincipal();
+                
+                User currentUser;
+                currentUser = currentPrincipal.getUser();
+
+                Label userName = new Label(currentUser.fullname);
 
                 userName.setSizeUndefined();
 
@@ -119,7 +123,7 @@ public final class MainComponentsBuilder {
                     public void menuSelected(
                             MenuBar.MenuItem selectedItem) {
                         Notification
-                                .show("Not implemented in this demo");
+                                .show("Hold there, cowboy.");
                     }
                 };
                 MenuBar settings = new MenuBar();

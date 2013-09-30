@@ -2,6 +2,7 @@ package com.bebopx.coltrane.view.main;
 
 import com.bebopx.coltrane.main.uibridge.UiBridge;
 import com.bebopx.coltrane.sys.LocalNavigator;
+import com.bebopx.coltrane.util.ComponentTool;
 import com.bebopx.coltrane.view.home.HomeView;
 import com.bebopx.coltrane.view.util.Icon;
 import com.bebopx.coltrane.view.util.ViewManager;
@@ -10,6 +11,7 @@ import com.google.common.base.Strings;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.NativeButton;
 
 import java.util.Iterator;
 
@@ -25,13 +27,12 @@ import ru.xpoft.vaadin.VaadinView;
 public final class MainSpecialView {
 
     /**
-     * Good ole' logger. Lowercase because we find it cozier this way, and
-     * to distinguish it from true constants. So we put a NOPMD on it.
-     * Our logger, our rules.
+     * Good ole' logger. Lowercase because we find it cozier this way, and to
+     * distinguish it from true constants. So we put a NOPMD on it. Our logger,
+     * our rules.
      */
     private static final Logger logger = LoggerFactory.getLogger( //NOPMD
             MainSpecialView.class); //NOPMD
-    
     /**
      * UiBridge's components. Can't believe we actually use 'em all.
      */
@@ -40,6 +41,9 @@ public final class MainSpecialView {
     private static transient CssLayout root;
     private static transient LocalNavigator nav;
     private static transient ViewManager viewManager;
+    
+    // this is just us being very very clean
+    private static final String EMPTY_STRING = "";
 
     /**
      * This constructor is private because this is a utility, non-instanceable
@@ -50,11 +54,11 @@ public final class MainSpecialView {
     }
 
     /**
-     * Builds the Main Special View. This is an static method, because the
-     * Main Special View couples itself on the Root UI and won't let it go.
-     * Ever.
+     * Builds the Main Special View. This is an static method, because the Main
+     * Special View couples itself on the Root UI and won't let it go. Ever.
      * Mostly because we want to control everything using stuff like UiBridge
      * and views.
+     *
      * @param localUiBridge UiBridge injected to current UI.
      */
     public static void build(final UiBridge localUiBridge) {
@@ -79,7 +83,7 @@ public final class MainSpecialView {
         /**
          * Shall we build our sidebar with our parent views?
          */
-        buildViewButtons(viewManager.getParentViews());
+        buildSidebarButtons(viewManager.getParentViews());
 
         // Fake notifications, since we don't have a notification manager yet.
         viewManager.getViewButton(HomeView.class).setCaption(
@@ -92,7 +96,12 @@ public final class MainSpecialView {
         nav.navigateTo("home");
     }
 
-    private static void buildViewButtons(final Iterator<Class<?>> iterate) {
+    /**
+     * Builds all of the sidebar's buttons.
+     *
+     * @param iterate The iterator that runs through all parent views.
+     */
+    private static void buildSidebarButtons(final Iterator<Class<?>> iterate) {
         /**
          * This gets a bit messy. We get all the available views from the view
          * manager, get their name, their icon and add the fellas to the our
@@ -107,12 +116,15 @@ public final class MainSpecialView {
 
                 /**
                  * If our dear developer did not manually set an icon, the
-                 * annotation will be exploding null, so we set it as empty
-                 * and let the component builder handle this.
+                 * annotation will be exploding null, so we set it as empty and
+                 * let the component builder handle this.
                  */
                 String icon;
-                icon = Strings.nullToEmpty(
-                        localObj.getAnnotation(Icon.class).value());
+                if (localObj.isAnnotationPresent(Icon.class)) {
+                    icon = localObj.getAnnotation(Icon.class).value();
+                } else {
+                    icon = EMPTY_STRING;
+                }
 
                 /**
                  * So this is kinda inverted behaviour. If condition true, then
@@ -124,8 +136,7 @@ public final class MainSpecialView {
                             ":Nameless view. Please inform view's name."));
                 } else {
                     Button generatedButton;
-                    generatedButton = MainComponentsBuilder.buildViewAccess(
-                            view, icon, menu, nav);
+                    generatedButton = buildViewAccessButton(view, icon);
                     generatedButton.setHtmlContentAllowed(true);
                     menu.addComponent(generatedButton);
                     viewManager.addButtonToView(localObj, generatedButton);
@@ -137,5 +148,35 @@ public final class MainSpecialView {
                 logger.error("Non-annotated view got into ViewManager.");
             }
         }
+    }
+
+    /**
+     * A proxy to MainComponentsBuilder's buildViewAccessButton, with a bit of
+     * preprocessing to avoid major meltdowns, plus the use of local static
+     * fields.
+     *
+     * @param view The view to have the button created.
+     * @param icon The view's icon. Must be declared on Vaadin's theme.
+     * @return The generated Button.
+     */
+    private static Button buildViewAccessButton(final String view,
+            final String icon) {
+
+        String localIcon = icon;
+        Button localButton;
+
+        /**
+         * We are assuming that the absence of icon declaration means an icon
+         * with the exact name of the view is available on the theme.
+         * I hope we are right. For your sake.
+         */
+        if (Strings.isNullOrEmpty(localIcon.trim())) {
+            localIcon = "icon-".concat(view);
+        }
+        // I did say this is a proxy.
+        localButton = MainComponentsBuilder.buildViewAccessButton(
+                view, localIcon, menu, nav);
+
+        return localButton;
     }
 }

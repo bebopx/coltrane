@@ -11,7 +11,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bebopx.common.security.LocalPrincipal;
@@ -58,11 +57,13 @@ public class LocalRealm extends AuthorizingRealm implements Serializable {
             };
             roles.add("user");
 
+            localUser.fullname = "Chet Baker";
             localUser.username = "user";
             localPrincipal = new LocalPrincipal(localUser, roles);
 
             localAuthInfo = new SimpleAuthenticationInfo(
                     localPrincipal, userPass.getCredentials(), this.getName());
+            localUser.credential = localAuthInfo.toString();
         } else {
             localAuthInfo = null; //NOPMD - shiro expects null
         }
