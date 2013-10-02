@@ -2,7 +2,6 @@ package com.bebopx.coltrane.view.main;
 
 import com.bebopx.coltrane.main.uibridge.UiBridge;
 import com.bebopx.coltrane.sys.LocalNavigator;
-import com.bebopx.coltrane.util.ComponentTool;
 import com.bebopx.coltrane.view.home.HomeView;
 import com.bebopx.coltrane.view.util.Icon;
 import com.bebopx.coltrane.view.util.ViewManager;
@@ -11,7 +10,6 @@ import com.google.common.base.Strings;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.NativeButton;
 
 import java.util.Iterator;
 
@@ -97,6 +95,11 @@ public final class MainSpecialView {
     }
 
     /**
+     * Those two guys must be here because of the static code declaration
+     * inside the buttons, otherwise they'd be kicked to MainComponentsBuilder.
+     */
+    
+    /**
      * Builds all of the sidebar's buttons.
      *
      * @param iterate The iterator that runs through all parent views.
@@ -121,9 +124,9 @@ public final class MainSpecialView {
                  */
                 String icon;
                 if (localObj.isAnnotationPresent(Icon.class)) {
-                    icon = localObj.getAnnotation(Icon.class).value();
+                    icon = localObj.getAnnotation(Icon.class).value(); //NOPMD
                 } else {
-                    icon = EMPTY_STRING;
+                    icon = EMPTY_STRING; //NOPMD
                 }
 
                 /**
@@ -145,7 +148,8 @@ public final class MainSpecialView {
             } else {
                 // Bizarre issue. The viewManager is populated by annotation.
                 // Find out what the hell happened, if this comes up, man.
-                logger.error("Non-annotated view got into ViewManager.");
+                logger.error(localObj.getCanonicalName().concat(
+                        ":Non-annotated view got into ViewManager."));
             }
         }
     }

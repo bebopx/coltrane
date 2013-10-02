@@ -58,7 +58,6 @@ public class RootUI extends UI implements ErrorHandler {
 
         VaadinSession.getCurrent().setErrorHandler(this);
 
-
         LoginSpecialView.build(root);
 
     }

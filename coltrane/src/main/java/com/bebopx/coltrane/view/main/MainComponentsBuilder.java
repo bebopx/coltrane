@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bebopx.coltrane.view.main;
 
-import com.bebopx.coltrane.bridge.Generator;
+import com.bebopx.coltrane.bridge.LocalAuthenticator;
 import com.bebopx.coltrane.sys.LocalNavigator;
 import com.bebopx.coltrane.util.ComponentTool;
 import com.bebopx.common.security.LocalPrincipal;
 import com.bebopx.common.security.User;
-import com.google.common.base.Strings;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -20,10 +15,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
 
 /**
  *
@@ -34,45 +29,24 @@ public final class MainComponentsBuilder {
     private MainComponentsBuilder() {
     }
 
-    public static Button buildViewAccessButton(final String view, final String icon,
-                      final CssLayout menu, final LocalNavigator nav) {
+    public static HorizontalLayout buildMainLayer(final CssLayout menu, final CssLayout content) {
 
-        Button localButton = new NativeButton(view.substring(0, 1).toUpperCase()
-                + view.substring(1).replace('-', ' '));
-        localButton.addStyleName(icon);
-
-        localButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                ComponentTool.removeChildrenComponentStyleName(menu, "selected");
-                event.getButton().addStyleName("selected");
-                //if (!nav.getState().equals(new StringBuilder().append("/").append(view).toString())) {
-                nav.navigateTo(view);
-                //}
-            }
-        });
-        return localButton;
-    }
-
-    public static CssLayout buildBrandingComponent() {
-        return new CssLayout() {
+        return new HorizontalLayout() {
             {
-                addStyleName("branding");
-                Label logo;
-                logo = new Label(
-                        "<span>bebopX</span> Coltrane",
-                        ContentMode.HTML);
-                logo.setSizeUndefined();
-                addComponent(logo);
+                setSizeFull();
+                addStyleName("main-view");
+                addComponent(buildSidebarLayer(menu));
+                addComponent(content);
+                content.setSizeFull();
+                content.addStyleName("view-content");
+                setExpandRatio(content, 1);
             }
         };
     }
 
     public static VerticalLayout buildSidebarLayer(final CssLayout menu) {
 
-
         return new VerticalLayout() {
-            // Sidebar
             {
                 addStyleName("sidebar");
                 setWidth(null);
@@ -93,6 +67,20 @@ public final class MainComponentsBuilder {
         };
     }
 
+    public static CssLayout buildBrandingComponent() {
+        return new CssLayout() {
+            {
+                addStyleName("branding");
+                Label logo;
+                logo = new Label(
+                        "<span>bebopX</span> Coltrane",
+                        ContentMode.HTML);
+                logo.setSizeUndefined();
+                addComponent(logo);
+            }
+        };
+    }
+
     public static VerticalLayout buildUserComponent() {
 
         return new VerticalLayout() {
@@ -102,14 +90,14 @@ public final class MainComponentsBuilder {
                 Image profilePic = new Image(null, new ThemeResource("img/profile-pic.png"));
                 profilePic.setWidth("34px");
                 addComponent(profilePic);
-                
-                
+
+
                 PrincipalCollection currentCollection;
                 currentCollection = SecurityUtils.getSubject().getPrincipals();
-                
+
                 LocalPrincipal currentPrincipal;
-                currentPrincipal = (LocalPrincipal)currentCollection.getPrimaryPrincipal();
-                
+                currentPrincipal = (LocalPrincipal) currentCollection.getPrimaryPrincipal();
+
                 User currentUser;
                 currentUser = currentPrincipal.getUser();
 
@@ -147,25 +135,39 @@ public final class MainComponentsBuilder {
                         new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        // buildLoginView(true);
+                        LocalAuthenticator.Logout();
+                        UI.getCurrent().close();
                     }
                 });
             }
         };
     }
 
-    public static HorizontalLayout buildMainLayer(final CssLayout menu, final CssLayout content) {
+    public static Button buildViewAccessButton(final String view, final String icon,
+            final CssLayout menu, final LocalNavigator nav) {
 
-        return new HorizontalLayout() {
-            {
-                setSizeFull();
-                addStyleName("main-view");
-                addComponent(buildSidebarLayer(menu));
-                addComponent(content);
-                content.setSizeFull();
-                content.addStyleName("view-content");
-                setExpandRatio(content, 1);
+
+        Button localButton;
+        localButton = new NativeButton(view); //constructor takes caption as arg
+        localButton.addStyleName(icon);
+
+        localButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(final Button.ClickEvent event) {
+
+                String navView;
+                navView = "/".concat(view);
+
+                ComponentTool.removeChildrenComponentStyleName(
+                        menu, "selected");
+                event.getButton().addStyleName("selected");
+
+                if (!nav.getState().equals(navView)) {
+                    nav.navigateTo(view);
+                }
             }
-        };
+        });
+
+        return localButton;
     }
 }
