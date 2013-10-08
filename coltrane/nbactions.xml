@@ -10,4 +10,14 @@
                 
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-Run on TomEE</actionName>
+            <displayName>Run on TomEE</displayName>
+            <goals>
+                <goal>tomee:run</goal>
+            </goals>
+            <properties>
+                <netbeans.deploy>true</netbeans.deploy>
+            </properties>
+        </action>
     </actions>

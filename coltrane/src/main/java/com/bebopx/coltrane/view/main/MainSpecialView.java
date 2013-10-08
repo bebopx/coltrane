@@ -1,8 +1,10 @@
 package com.bebopx.coltrane.view.main;
 
+import com.bebopx.coltrane.view.main.components.MainComponentsBuilder;
 import com.bebopx.coltrane.main.uibridge.UiBridge;
 import com.bebopx.coltrane.sys.LocalNavigator;
 import com.bebopx.coltrane.view.home.HomeView;
+import com.bebopx.coltrane.view.main.components.ViewAccessButtonTool;
 import com.bebopx.coltrane.view.util.Icon;
 import com.bebopx.coltrane.view.util.ViewManager;
 
@@ -62,7 +64,7 @@ public final class MainSpecialView {
     public static void build(final UiBridge localUiBridge) {
 
         /**
-         * Goes without saying, but the next two blocks are related to
+         * Goes without saying, but the next blocks are related to
          * distributing UiBridges parts in variables, so we can work with'em.
          */
         content = localUiBridge.getContent();
@@ -155,7 +157,7 @@ public final class MainSpecialView {
     }
 
     /**
-     * A proxy to MainComponentsBuilder's buildViewAccessButton, with a bit of
+     * A proxy to ViewAccessButtonTool's buildViewAccessButton, with a bit of
      * preprocessing to avoid major meltdowns, plus the use of local static
      * fields.
      *
@@ -178,7 +180,7 @@ public final class MainSpecialView {
             localIcon = "icon-".concat(view);
         }
         // I did say this is a proxy.
-        localButton = MainComponentsBuilder.buildViewAccessButton(
+        localButton = ViewAccessButtonTool.buildViewAccessButton(
                 view, localIcon, menu, nav);
 
         return localButton;

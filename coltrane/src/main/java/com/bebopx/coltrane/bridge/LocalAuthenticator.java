@@ -1,5 +1,6 @@
 package com.bebopx.coltrane.bridge;
 
+import com.vaadin.ui.UI;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -39,7 +40,7 @@ public class LocalAuthenticator {
      *
      * @return
      */
-    public boolean Authenticate() {
+    public boolean doAuthenticate() {
         try {
             logger.info("auth inicio");
             currentUser.login(token);
@@ -70,7 +71,8 @@ public class LocalAuthenticator {
     /**
      * Executes a logout from Shiro's SecurityUtils.
      */
-    public static void Logout() {
+    public static void doLogout() {
         SecurityUtils.getSubject().logout();
+        UI.getCurrent().close();
     }
 }

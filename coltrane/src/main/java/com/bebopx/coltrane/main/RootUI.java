@@ -1,10 +1,10 @@
 package com.bebopx.coltrane.main;
 
 import com.bebopx.coltrane.main.uibridge.UiBridge;
+import com.bebopx.coltrane.sys.LocalErrorHandler;
 import com.bebopx.coltrane.sys.LocalNavigator;
 import com.bebopx.coltrane.view.main.LoginSpecialView;
 import com.bebopx.coltrane.view.main.MainSpecialView;
-import com.bebopx.coltrane.view.util.ViewManager;
 import java.util.Locale;
 
 import com.vaadin.annotations.Theme;
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Title("bebopx Coltrane")
 @Scope("prototype") //prototyped because one session may have more than one UI
 @Component("RootUI")
-public class RootUI extends UI implements ErrorHandler {
+public class RootUI extends UI {
 
     private static final Logger logger = LoggerFactory.getLogger(RootUI.class);
 
@@ -42,21 +42,18 @@ public class RootUI extends UI implements ErrorHandler {
 
     @Override
     protected void init(final VaadinRequest request) {
-        
-        logger.info("rootui");
-        
-        final CssLayout root;
-        root = uiBridge.getMainRoot();
-        
-        
-
         setLocale(Locale.US);
+
+        CssLayout root;
+        root = uiBridge.getMainRoot();
+
+
 
         setContent(root);
         root.addStyleName("root");
         root.setSizeFull();
 
-        VaadinSession.getCurrent().setErrorHandler(this);
+        VaadinSession.getCurrent().setErrorHandler(new LocalErrorHandler());
 
         LoginSpecialView.build(root);
 
@@ -64,50 +61,9 @@ public class RootUI extends UI implements ErrorHandler {
 
     public void buildMainView() {
         LoginSpecialView.destroy(uiBridge.getMainRoot());
-        LocalNavigator localNavigator = new LocalNavigator(this, uiBridge);
+        LocalNavigator localNavigator;
+        localNavigator = new LocalNavigator(this, uiBridge);
         uiBridge.setNav(localNavigator);
         MainSpecialView.build(uiBridge);
-    }
-    private Transferable items;
-
-    @Override
-    public void error(com.vaadin.server.ErrorEvent event) {
-        // connector event
-        if (event.getThrowable().getCause() instanceof IllegalArgumentException) {
-            IllegalArgumentException exception = (IllegalArgumentException) event.getThrowable().getCause();
-            Notification.show(exception.getMessage(), Notification.Type.ERROR_MESSAGE);
-
-            // Cleanup view. Now Vaadin ignores errors and always shows the view.  :-(
-            // since beta10
-            setContent(null);
-            return;
-        }
-
-        // Error on page load. Now it doesn't work. User sees standard error page.
-        if (event.getThrowable() instanceof IllegalArgumentException) {
-            IllegalArgumentException exception = (IllegalArgumentException) event.getThrowable();
-
-            Label label = new Label(exception.getMessage());
-            label.setWidth(-1, Unit.PERCENTAGE);
-
-            Link goToMain = new Link("Go to main", new ExternalResource("/"));
-
-            VerticalLayout layout = new VerticalLayout();
-            layout.addComponent(label);
-            layout.addComponent(goToMain);
-            layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
-            layout.setComponentAlignment(goToMain, Alignment.MIDDLE_CENTER);
-
-            VerticalLayout mainLayout = new VerticalLayout();
-            mainLayout.setSizeFull();
-            mainLayout.addComponent(layout);
-            mainLayout.setComponentAlignment(layout, Alignment.MIDDLE_CENTER);
-
-            setContent(mainLayout);
-            Notification.show(exception.getMessage(), Notification.Type.ERROR_MESSAGE);
-            return;
-        }
-
-        DefaultErrorHandler.doDefault(event);
     }
 }

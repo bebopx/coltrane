@@ -164,7 +164,7 @@ public final class LoginSpecialView {
                     // We probably should do something better here
                     auth = new LocalAuthenticator(
                             username.getValue(), password.getValue());
-                    if (auth.Authenticate()) {
+                    if (auth.doAuthenticate()) {
                         signin.removeClickShortcut();
                         doLogin(root);
                     } else {

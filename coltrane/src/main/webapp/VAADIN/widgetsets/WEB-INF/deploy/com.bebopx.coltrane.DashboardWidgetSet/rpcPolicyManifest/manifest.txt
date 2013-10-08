@@ -1,0 +1,2 @@
+# Module com.bebopx.coltrane.DashboardWidgetSet
+# RPC service class, partial path of RPC policy file
