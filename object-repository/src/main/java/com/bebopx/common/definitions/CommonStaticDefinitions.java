@@ -14,9 +14,7 @@ public final class CommonStaticDefinitions {
 
     public static String getSimpleApplicationName() {
 
-        String simpleApplicationName;
-        simpleApplicationName = StyledApplicationName.replaceAll("\\<.*?\\>", "");
-        return simpleApplicationName;
+        return ApplicationName;
     }
     
     public static String getFullApplicationName() {
