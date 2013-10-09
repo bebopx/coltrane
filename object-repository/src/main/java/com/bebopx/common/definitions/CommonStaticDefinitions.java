@@ -10,7 +10,7 @@ public final class CommonStaticDefinitions {
     }
 
     public final static String ApplicationName = "bebopX Coltrane";
-    private final static String StyledApplicationName = "<span>bebopX</span> Coltrane";
+    private final static String StyledApplicationName = "<span>bebopX</span><br/>Coltrane";
 
     public static String getSimpleApplicationName() {
 
