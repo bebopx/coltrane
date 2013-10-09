@@ -8,16 +8,18 @@ public final class CommonStaticDefinitions {
 
     private CommonStaticDefinitions() {
     }
-    private final static String ApplicationName = "<span>bebopX</span> Coltrane";
+
+    public final static String ApplicationName = "bebopX Coltrane";
+    private final static String StyledApplicationName = "<span>bebopX</span> Coltrane";
 
     public static String getSimpleApplicationName() {
 
         String simpleApplicationName;
-        simpleApplicationName = ApplicationName.replaceAll("\\<.*?\\>", "");
+        simpleApplicationName = StyledApplicationName.replaceAll("\\<.*?\\>", "");
         return simpleApplicationName;
     }
     
     public static String getFullApplicationName() {
-        return ApplicationName;
+        return StyledApplicationName;
     }
 }
