@@ -3,6 +3,7 @@ package com.bebopx.coltrane.view.main;
 import com.bebopx.coltrane.bridge.LocalAuthenticator;
 import com.bebopx.coltrane.main.RootUI;
 import com.bebopx.coltrane.util.ComponentTool;
+import com.bebopx.common.definitions.CommonStaticDefinitions;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -115,7 +116,8 @@ public final class LoginSpecialView {
         labels.addComponent(welcome);
         labels.setComponentAlignment(welcome, Alignment.MIDDLE_LEFT);
 
-        final Label title = new Label("bebopX Coltrane");
+        final Label title = new Label(CommonStaticDefinitions.getFullApplicationName(),
+                        ContentMode.HTML);
         title.setSizeUndefined();
         title.addStyleName("h2");
         title.addStyleName("light");

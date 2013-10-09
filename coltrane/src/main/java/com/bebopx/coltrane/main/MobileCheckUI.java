@@ -1,5 +1,7 @@
 package com.bebopx.coltrane.main;
 
+import com.bebopx.common.definitions.CommonStaticDefinitions;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.VaadinRequest;
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @author thiago
  */
 @Theme(Reindeer.THEME_NAME)
-@Title("bebopX Coltrane")
+@Title(CommonStaticDefinitions.ApplicationName)
 @Component("MobileCheckUI")
 @Scope("prototype")
 public class MobileCheckUI extends UI {

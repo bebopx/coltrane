@@ -4,6 +4,7 @@
  */
 package com.bebopx.coltrane.view.main.components;
 
+import com.bebopx.common.definitions.CommonStaticDefinitions;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
@@ -21,7 +22,7 @@ public class BrandingTool {
                 addStyleName("branding");
                 Label logo;
                 logo = new Label(
-                        "<span>bebopX</span> Coltrane",
+                        CommonStaticDefinitions.getFullApplicationName(),
                         ContentMode.HTML);
                 logo.setSizeUndefined();
                 addComponent(logo);
